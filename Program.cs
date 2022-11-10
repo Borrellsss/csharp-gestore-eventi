@@ -33,11 +33,12 @@ while (runProgram)
             break;
 
         case "4":
-            //ImportaProgrammaEventi();
+            ImportaProgrammaEventi();
             TerminaProgramma();
             break;
 
         case "5":
+            Console.WriteLine("Grazie e arrivederci!");
             runProgram = false;
             break;
 
@@ -99,7 +100,7 @@ void CreaProgrammaEvento()
         {
             Console.WriteLine("Vuoi creare un Evento generico o una Conferenza?");
             Console.WriteLine("[1]: Evento generico.");
-            Console.WriteLine("[2]: Conferenza");
+            Console.WriteLine("[2]: Conferenza.");
 
             string EventoOConferenza = Console.ReadLine();
             Console.Clear();
@@ -108,6 +109,11 @@ void CreaProgrammaEvento()
             {
                 case "1":
                     Console.WriteLine($"Evento {counter + 1} di {numeroEventiDaAggiungere}");
+
+                    Console.WriteLine();
+                    Console.WriteLine("--------------------------------------------------------------");
+                    Console.WriteLine();
+
                     Console.Write("Inserisci titolo: ");
                     string titoloEvento = Console.ReadLine();
 
@@ -524,34 +530,111 @@ void EsportaProgrammaEventi()
     try
     {
         string path = "C:\\Users\\edo_e\\source\\repos\\Classe 4 - Experis\\csharp-gestore-eventi\\programma-eventi.csv";
-        if (!File.Exists(path))
+
+        if(File.Exists(path))
         {
-            StreamWriter file = File.CreateText(path);
+            File.Delete(path);
+        }
 
-            file.WriteLine("tipo,titolo,data,capienza-massima,posti-prenotati,relatore,prezzo");
-            foreach (Evento evento in nuovoProgrammaEvento.Eventi)
+        StreamWriter file = File.CreateText(path);
+
+        file.WriteLine("tipo,titolo,data,capienza-massima,posti-prenotati,relatore,prezzo");
+        foreach (Evento evento in nuovoProgrammaEvento.Eventi)
+        {
+            string stringToExport = evento.ToStringToExport();
+
+            List<string> stringListToExport = stringToExport.Split('-').ToList();
+
+            if(stringListToExport.Count() == 4)
             {
-                string stringToexport = evento.ToStringToExport();
+                file.WriteLine($"{evento.GetType().ToString().ToLower()},{stringListToExport[0].Replace(" ", "-")},{stringListToExport[1]},{stringListToExport[2]},{stringListToExport[3]},0,0");
+            }
+            else
+            {
+                file.WriteLine($"{evento.GetType().ToString().ToLower()},{stringListToExport[0].Replace(" ", "-")},{stringListToExport[1]},{stringListToExport[2]},{stringListToExport[3]},{stringListToExport[4].Replace(" ", "-")},{stringListToExport[5]}");
+            }
+        }
 
-                List<string> stringArrayToExport = stringToexport.Split('-').ToList();
+        file.Close();
+        Console.WriteLine("File esportato correttamente!");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Si è verificato un errore durante l'esportazione del file.");
+    }
+}
 
-                if(stringArrayToExport.Count() == 4)
+void ImportaProgrammaEventi()
+{
+    ProgrammaEventi nuovoProgrammaImportato = null;
+
+    bool newProgramToImportRequest = true;
+    while(newProgramToImportRequest)
+    {
+        Console.WriteLine("Scrivi il titolo del programma eventi che vuoi creare per eseguire l'import: ");
+
+        Console.Write("Titolo: ");
+        string titoloProgrammaimportato = Console.ReadLine();
+
+        try
+        {
+            nuovoProgrammaImportato = new ProgrammaEventi(titoloProgrammaimportato);
+            newProgramToImportRequest = false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Errore durante la creazione, non è possibile inserire stringhe vuote!");
+        }
+    }
+
+    try
+    {
+        string path = "C:\\Users\\edo_e\\source\\repos\\Classe 4 - Experis\\csharp-gestore-eventi\\programma-eventi.csv";
+        StreamReader file = File.OpenText(path);
+
+        int counter = 0;
+        while (!file.EndOfStream)
+        {
+            string stringToImport = file.ReadLine();
+
+            List<string> stringListToImport = stringToImport.Split(',').ToList();
+
+            Evento evento = null;
+
+            if (counter > 0)
+            {
+                if (stringListToImport[5] == "0" && stringListToImport[6] == "0")
                 {
-                    file.WriteLine($"{evento.GetType().ToString().ToLower()},{stringArrayToExport[0].Replace(" ", "-")},{stringArrayToExport[1]},{stringArrayToExport[2]},{stringArrayToExport[3]},0,0");
+                    string titolo = stringListToImport[1].Replace("-", " ");
+                    DateTime data = Convert.ToDateTime(stringListToImport[2]);
+                    int capienzaMassima = Convert.ToInt32(stringListToImport[3]);
+                    int postiPrenotati = Convert.ToInt32(stringListToImport[4]);
+                    evento = new Evento(titolo, data, capienzaMassima);
                 }
                 else
                 {
-                    file.WriteLine($"{evento.GetType().ToString().ToLower()},{stringArrayToExport[0].Replace(" ", "-")},{stringArrayToExport[1]},{stringArrayToExport[2]},{stringArrayToExport[3]},{stringArrayToExport[4].Replace(" ", "-")},{stringArrayToExport[5]}");
+                    string titolo = stringListToImport[1].Replace("-", " ");
+                    DateTime data = Convert.ToDateTime(stringListToImport[2]);
+                    int capienzaMassima = Convert.ToInt32(stringListToImport[3]);
+                    int postiPrenotati = Convert.ToInt32(stringListToImport[4]);
+                    string relatore = stringListToImport[5].Replace("-", " ");
+                    double prezzo = Convert.ToDouble(stringListToImport[6].Replace(".", ","));
+                    evento = new Conferenza(relatore, prezzo, titolo, data, capienzaMassima);
                 }
+
+                nuovoProgrammaImportato.AggiungiEvento(evento);
             }
-            file.Close();
+            
+            counter++;
         }
+
+        file.Close();
+        Console.WriteLine("File importato correttamente!");
+        nuovoProgrammaImportato.StampaProgrammaEventi();
     }
-    catch (Exception e)
+    catch (Exception ex)
     {
-
-        Console.WriteLine(e.Message);
-
+        Console.WriteLine("Si è verificato un errore durante l'importazione del file.");
     }
 }
 
@@ -586,6 +669,5 @@ void TerminaProgramma()
                 Console.WriteLine("Scelta errata!");
                 break;
         }
-
     }
 }
