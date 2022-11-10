@@ -1,15 +1,19 @@
 ﻿using System.Linq.Expressions;
 
 bool runProgram = true;
+ProgrammaEventi nuovoProgrammaEvento = null;
 
-while(runProgram)
+while (runProgram)
 {
     Console.WriteLine("Cosa vuoi fare?");
     Console.WriteLine("[1]: Crea Programma Evento.");
     Console.WriteLine("[2]: Crea un singolo Evento.");
-    Console.WriteLine("[3]: Termina programma.");
+    Console.WriteLine("[3]: Esporta programma eventi.");
+    Console.WriteLine("[4]: Importa programma eventi.");
+    Console.WriteLine("[5]: Termina programma.");
 
     string sceltaMenu = Console.ReadLine();
+    Console.Clear();
 
     switch(sceltaMenu)
     {
@@ -24,6 +28,16 @@ while(runProgram)
             break;
 
         case "3":
+            EsportaProgrammaEventi();
+            TerminaProgramma();
+            break;
+
+        case "4":
+            //ImportaProgrammaEventi();
+            TerminaProgramma();
+            break;
+
+        case "5":
             runProgram = false;
             break;
 
@@ -38,13 +52,12 @@ void CreaProgrammaEvento()
 {
     Console.WriteLine("Quale Programma Evento vuoi creare?");
 
-    ProgrammaEventi nuovoProgrammaEvento = null;
-
     bool createEventProgramRequest = true;
     while(createEventProgramRequest)
     {
         Console.Write("Inserisci titolo: ");
         string titoloProgrammaEvento = Console.ReadLine();
+        Console.Clear();
 
         try
         {
@@ -63,12 +76,13 @@ void CreaProgrammaEvento()
     bool numberOfEventsRequest = true;
     while (numberOfEventsRequest)
     {
-        Console.WriteLine("Quanti Eventi vuoi creare e aggiungere al programma?");
+        Console.WriteLine("Quanti Eventi e/o Conferenze vuoi creare e aggiungere al programma?");
         Console.Write("Inserisci numero: ");
 
         try
         {
             numeroEventiDaAggiungere = Convert.ToInt32(Console.ReadLine());
+            Console.Clear();
             numberOfEventsRequest = false;
         }
         catch (Exception ex)
@@ -80,73 +94,214 @@ void CreaProgrammaEvento()
     int counter = 0;
     while(counter < numeroEventiDaAggiungere)
     {
-        Console.Write("Inserisci titolo: ");
-        string titoloEvento = Console.ReadLine();
-
-        DateTime data = new DateTime();
-        Evento nuovoEvento = null;
-
-        bool dateRequest = true;
-        while (dateRequest)
+        bool eventOrConferenceRequest = true;
+        while(eventOrConferenceRequest)
         {
-            Console.WriteLine("Inserisci giorno, mese e anno con formato gg/mm/yyyy.");
+            Console.WriteLine("Vuoi creare un Evento generico o una Conferenza?");
+            Console.WriteLine("[1]: Evento generico.");
+            Console.WriteLine("[2]: Conferenza");
 
-            try
+            string EventoOConferenza = Console.ReadLine();
+            Console.Clear();
+
+            switch (EventoOConferenza)
             {
-                Console.Write("Giorno: ");
-                int giorno = Convert.ToInt32(Console.ReadLine());
+                case "1":
+                    Console.WriteLine($"Evento {counter + 1} di {numeroEventiDaAggiungere}");
+                    Console.Write("Inserisci titolo: ");
+                    string titoloEvento = Console.ReadLine();
 
-                Console.Write("Mese: ");
-                int mese = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine();
+                    Console.WriteLine("--------------------------------------------------------------");
+                    Console.WriteLine();
 
-                Console.Write("Anno: ");
-                int anno = Convert.ToInt32(Console.ReadLine());
+                    DateTime dataEvento = new DateTime();
+                    Evento nuovoEvento = null;
 
-                data = new DateTime(anno, mese, giorno);
+                    bool EventDateRequest = true;
+                    while (EventDateRequest)
+                    {
+                        Console.WriteLine("Inserisci giorno, mese e anno con formato gg/mm/yyyy.");
 
-                dateRequest = false;
+                        try
+                        {
+                            Console.Write("Giorno: ");
+                            int giorno = Convert.ToInt32(Console.ReadLine());
+
+                            Console.Write("Mese: ");
+                            int mese = Convert.ToInt32(Console.ReadLine());
+
+                            Console.Write("Anno: ");
+                            int anno = Convert.ToInt32(Console.ReadLine());
+
+                            dataEvento = new DateTime(anno, mese, giorno);
+
+                            Console.WriteLine();
+                            Console.WriteLine("--------------------------------------------------------------");
+                            Console.WriteLine();
+
+                            EventDateRequest = false;
+                        }
+                        catch (FormatException ex)
+                        {
+                            Console.WriteLine("Non è possibile inserire giorno, mese o anno in lettere!");
+                        }
+                    }
+
+                    int postiEvento = 0;
+
+                    bool eventRoomRequest = true;
+                    while (eventRoomRequest)
+                    {
+                        Console.Write("Inserisci numero di posti: ");
+
+                        try
+                        {
+                            postiEvento = Convert.ToInt32(Console.ReadLine());
+
+                            Console.Clear();
+
+                            eventRoomRequest = false;
+                        }
+                        catch (FormatException ex)
+                        {
+                            Console.WriteLine("Non è possibile inserire il numero di posti in lettere!");
+                        }
+                    }
+
+                    try
+                    {
+                        nuovoEvento = new Evento(titoloEvento, dataEvento, postiEvento);
+                        nuovoProgrammaEvento.AggiungiEvento(nuovoEvento);
+                        counter++;
+                        Console.WriteLine("Evento aggiunto correttamente!");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Qualcosa è andato storto!");
+                    }
+
+                    eventOrConferenceRequest = false;
+                    break;
+                case "2":
+                    Console.WriteLine($"Evento {counter + 1} di {numeroEventiDaAggiungere}");
+                    Console.Write("Inserisci titolo: ");
+                    string titoloConferenza = Console.ReadLine();
+
+                    Console.WriteLine();
+                    Console.WriteLine("--------------------------------------------------------------");
+                    Console.WriteLine();
+
+                    Console.Write("Inserisci nome relatore: ");
+                    string nomeRelatore = Console.ReadLine();
+
+                    Console.WriteLine();
+                    Console.WriteLine("--------------------------------------------------------------");
+                    Console.WriteLine();
+
+                    DateTime dataConferenza = new DateTime();
+                    Conferenza nuovaConferenza = null;
+
+                    bool conferenceDateRequest = true;
+                    while (conferenceDateRequest)
+                    {
+                        Console.WriteLine("Inserisci giorno, mese e anno con formato gg/mm/yyyy.");
+
+                        try
+                        {
+                            Console.Write("Giorno: ");
+                            int giorno = Convert.ToInt32(Console.ReadLine());
+
+                            Console.Write("Mese: ");
+                            int mese = Convert.ToInt32(Console.ReadLine());
+
+                            Console.Write("Anno: ");
+                            int anno = Convert.ToInt32(Console.ReadLine());
+
+                            dataConferenza = new DateTime(anno, mese, giorno);
+
+                            Console.WriteLine();
+                            Console.WriteLine("--------------------------------------------------------------");
+                            Console.WriteLine();
+
+                            conferenceDateRequest = false;
+                        }
+                        catch (FormatException ex)
+                        {
+                            Console.WriteLine("Non è possibile inserire giorno, mese o anno in lettere!");
+                        }
+                    }
+
+                    int postiConferenza = 0;
+
+                    bool conferenceRoomRequest = true;
+                    while (conferenceRoomRequest)
+                    {
+                        Console.Write("Inserisci numero di posti: ");
+
+                        try
+                        {
+                            postiConferenza = Convert.ToInt32(Console.ReadLine());
+
+                            Console.WriteLine();
+                            Console.WriteLine("--------------------------------------------------------------");
+                            Console.WriteLine();
+
+                            conferenceRoomRequest = false;
+                        }
+                        catch (FormatException ex)
+                        {
+                            Console.WriteLine("Non è possibile inserire il numero di posti in lettere!");
+                        }
+                    }
+
+                    double prezzoConferenza = 0;
+
+                    bool conferencePriceRequest = true;
+                    while (conferencePriceRequest)
+                    {
+                        Console.Write("Inserisci prezzo: ");
+
+                        try
+                        {
+                            prezzoConferenza = Convert.ToDouble(Console.ReadLine());
+
+                            Console.Clear();
+
+                            conferencePriceRequest = false;
+                        }
+                        catch (FormatException ex)
+                        {
+                            Console.WriteLine("Non è possibile inserire il prezzo in lettere!");
+                        }
+                    }
+
+                    try
+                    {
+                        nuovaConferenza = new Conferenza(nomeRelatore, prezzoConferenza, titoloConferenza, dataConferenza, postiConferenza);
+                        nuovoProgrammaEvento.AggiungiEvento(nuovaConferenza);
+                        counter++;
+                        Console.WriteLine("Evento aggiunto correttamente!");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Qualcosa è andato storto!");
+                    }
+                    eventOrConferenceRequest = false;
+                    break;
+                default:
+                    Console.WriteLine("Opzione non valida!");
+                    break;
             }
-            catch (FormatException ex)
-            {
-                Console.WriteLine("Non è possibile inserire giorno, mese o anno in lettere!");
-            }
-        }
-
-        int posti = 0;
-
-        bool roomRequest = true;
-        while (roomRequest)
-        {
-            Console.Write("Inserisci numero di posti: ");
-
-            try
-            {
-                posti = Convert.ToInt32(Console.ReadLine());
-                roomRequest = false;
-            }
-            catch (FormatException ex)
-            {
-                Console.WriteLine("Non è possibile inserire il numero di posti in lettere!");
-            }
-        }
-
-        try
-        {
-            nuovoEvento = new Evento(titoloEvento, data, posti);
-            nuovoProgrammaEvento.AggiungiEvento(nuovoEvento);
-            counter++;
-            Console.WriteLine("Evento aggiunto correttamente!");  
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Qualcosa è andato storto!");
         }
     }
 
     Console.WriteLine($"Numero Eventi creati: {ProgrammaEventi.GetNumeroEventiPresenti()}");
 
-    Console.WriteLine("Lista Eventi creati per questo Programma Eventi: ");
     nuovoProgrammaEvento.StampaProgrammaEventi();
+
+    Console.ReadLine();
+    Console.Clear();
 
     Console.WriteLine("Inserisci una data per effettuare una ricerca: ");
 
@@ -169,7 +324,7 @@ void CreaProgrammaEvento()
             int anno = Convert.ToInt32(Console.ReadLine());
 
             dataDaControllare = new DateTime(anno, mese, giorno);
-
+            Console.Clear();
             dateToCheckRequest = false;
         }
         catch (FormatException ex)
@@ -189,7 +344,7 @@ void CreaProgrammaEvento()
         Console.WriteLine("Non è presente alcun Evento in questa data!");
     }
 
-    nuovoProgrammaEvento.svuotaListaEventi();
+    //nuovoProgrammaEvento.svuotaListaEventi();
 }
 
 void CreaEvento() {
@@ -364,8 +519,46 @@ void CreaEvento() {
     }
 }
 
+void EsportaProgrammaEventi()
+{
+    try
+    {
+        string path = "C:\\Users\\edo_e\\source\\repos\\Classe 4 - Experis\\csharp-gestore-eventi\\programma-eventi.csv";
+        if (!File.Exists(path))
+        {
+            StreamWriter file = File.CreateText(path);
+
+            file.WriteLine("tipo,titolo,data,capienza-massima,posti-prenotati,relatore,prezzo");
+            foreach (Evento evento in nuovoProgrammaEvento.Eventi)
+            {
+                string stringToexport = evento.ToStringToExport();
+
+                List<string> stringArrayToExport = stringToexport.Split('-').ToList();
+
+                if(stringArrayToExport.Count() == 4)
+                {
+                    file.WriteLine($"{evento.GetType().ToString().ToLower()},{stringArrayToExport[0].Replace(" ", "-")},{stringArrayToExport[1]},{stringArrayToExport[2]},{stringArrayToExport[3]},0,0");
+                }
+                else
+                {
+                    file.WriteLine($"{evento.GetType().ToString().ToLower()},{stringArrayToExport[0].Replace(" ", "-")},{stringArrayToExport[1]},{stringArrayToExport[2]},{stringArrayToExport[3]},{stringArrayToExport[4].Replace(" ", "-")},{stringArrayToExport[5]}");
+                }
+            }
+            file.Close();
+        }
+    }
+    catch (Exception e)
+    {
+
+        Console.WriteLine(e.Message);
+
+    }
+}
+
 void TerminaProgramma()
 {
+    Console.ReadLine();
+    Console.Clear();
     bool endProgram = true;
 
     while (endProgram)
@@ -375,6 +568,7 @@ void TerminaProgramma()
         Console.WriteLine("[2]: No.");
 
         string sceltaTerminaProgramma = Console.ReadLine();
+        Console.Clear();
 
         switch (sceltaTerminaProgramma)
         {

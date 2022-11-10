@@ -38,11 +38,7 @@ public class Evento
         }
         protected set
         {
-            DateTime dataOdierna = DateTime.Now;
-            TimeSpan timeSpan = value - dataOdierna;
-            int differenzaInGiorni = Convert.ToInt32(timeSpan.Days / 30);
-
-            if(differenzaInGiorni < 0)
+            if (!Evento.IsValidDate(value))
             {
                 throw new Exception();
             }
@@ -81,11 +77,7 @@ public class Evento
             throw new Exception();
         }
 
-        DateTime dataOdierna = DateTime.Now;
-        TimeSpan timeSpan = Data - dataOdierna;
-        int differenzaInGiorni = Convert.ToInt32(timeSpan.Days / 30);
-
-        if (differenzaInGiorni < 0)
+        if (!Evento.IsValidDate(Data))
         {
             throw new Exception();
         }
@@ -101,11 +93,7 @@ public class Evento
             throw new Exception();
         }
 
-        DateTime dataOdierna = DateTime.Now;
-        TimeSpan timeSpan = Data - dataOdierna;
-        int differenzaInGiorni = Convert.ToInt32(timeSpan.Days / 30);
-
-        if (differenzaInGiorni < 0)
+        if (!Evento.IsValidDate(Data))
         {
             throw new Exception();
         }
@@ -114,6 +102,26 @@ public class Evento
     }
     public override string ToString()
     {
-        return $"Data Evento: {Data.ToString("dd/MM/yyyy")} \nTitolo: {Titolo} \nPosti prenotati: {PostiPrenotati} \nPosti ancora disponibili: {PostiDisponibili}";
+        return $"Data: {GetDataFormattata()} \nTitolo: {Titolo}";
     }
-}  
+
+    public string GetDataFormattata()
+    {
+        return Data.ToString("dd/MM/yyyy");
+    }
+    public static bool IsValidDate(DateTime data)
+    {
+        DateTime dataOdierna = DateTime.Today;
+
+        if (dataOdierna == data || dataOdierna > data)
+        {
+            return false;
+        }
+        
+        return true;
+    }
+    public virtual string ToStringToExport()
+    {
+        return $"{Titolo.ToLower()}-{GetDataFormattata()}-{CapienzaMassima}-{PostiPrenotati}";
+    }
+}

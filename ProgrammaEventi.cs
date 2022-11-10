@@ -1,7 +1,4 @@
-﻿
-
-
-public class ProgrammaEventi
+﻿public class ProgrammaEventi
 {
     protected static int NumeroEventiPresenti = 0;
     public ProgrammaEventi(string titolo)
@@ -76,7 +73,7 @@ public class ProgrammaEventi
                 {
                     Console.WriteLine("---------------------------------------------------------------------");
                     Console.WriteLine();
-                    Console.WriteLine($"EVENTO {i}");
+                    Console.WriteLine($"EVENTO {i + 1}");
                     Console.WriteLine(evento.ToString());
                     Console.WriteLine();
                     Console.WriteLine("---------------------------------------------------------------------");
@@ -85,7 +82,7 @@ public class ProgrammaEventi
                 {
                     Console.WriteLine("---------------------------------------------------------------------");
                     Console.WriteLine();
-                    Console.WriteLine($"EVENTO {i}");
+                    Console.WriteLine($"EVENTO {i + 1}");
                     Console.WriteLine(evento.ToString());
                     Console.WriteLine();
                 }
@@ -94,7 +91,7 @@ public class ProgrammaEventi
             {
                 Console.WriteLine("---------------------------------------------------------------------");
                 Console.WriteLine();
-                Console.WriteLine($"EVENTO {i}");
+                Console.WriteLine($"EVENTO {i + 1}");
                 Console.WriteLine(evento.ToString());
                 Console.WriteLine();
             }
@@ -127,7 +124,7 @@ public class ProgrammaEventi
                 {
                     Console.WriteLine("---------------------------------------------------------------------");
                     Console.WriteLine();
-                    Console.WriteLine($"Data: {evento.Data} - Titolo: {evento.Titolo}");
+                    Console.WriteLine(evento.ToString());
                     Console.WriteLine();
                     Console.WriteLine("---------------------------------------------------------------------");
                 }
@@ -135,7 +132,7 @@ public class ProgrammaEventi
                 {
                     Console.WriteLine("---------------------------------------------------------------------");
                     Console.WriteLine();
-                    Console.WriteLine($"Data: {evento.Data} - Titolo: {evento.Titolo}");
+                    Console.WriteLine(evento.ToString());
                     Console.WriteLine();
                 }
             }
@@ -143,7 +140,7 @@ public class ProgrammaEventi
             {
                 Console.WriteLine("---------------------------------------------------------------------");
                 Console.WriteLine();
-                Console.WriteLine($"Data: {evento.Data} - Titolo: {evento.Titolo}");
+                Console.WriteLine(evento.ToString());
                 Console.WriteLine();
             }
         }
