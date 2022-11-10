@@ -4,7 +4,6 @@ public class Evento
     protected string titolo;
     protected DateTime data;
     protected int capienzaMassima;
-    protected int postiDisponibili;
 
     public Evento(string titolo, DateTime data, int capienzaMassima)
     {
@@ -12,7 +11,6 @@ public class Evento
         Data = data;
         CapienzaMassima = capienzaMassima;
         PostiPrenotati = 0;
-        postiDisponibili = capienzaMassima;
     }
     public string Titolo
     { 
@@ -73,8 +71,8 @@ public class Evento
     {
         get
         {
-            return postiDisponibili;
-        } 
+            return CapienzaMassima - PostiPrenotati;
+        }
     }
     public void PrenotaPosti(int numeroPosti)
     {
@@ -93,7 +91,6 @@ public class Evento
         }
 
         PostiPrenotati += numeroPosti;
-        postiDisponibili -= numeroPosti;
     }
     public void DisdiciPostiPrenotati(int numeroPosti)
     {
@@ -114,7 +111,6 @@ public class Evento
         }
 
         PostiPrenotati -= numeroPosti;
-        postiDisponibili += numeroPosti;
     }
     public override string ToString()
     {
